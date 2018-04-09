@@ -42,13 +42,21 @@ app.get("/", (req, res) => {
 
 app.post("/kek", (req, res) => {
     console.log("POST /kek", "from", req.connection.remoteAddress);
-    console.info("request data", req.body.text);
+    console.info("request data", req.body);
     // console.info("response data", res);
     web.chat
-    .postMessage({ channel: conversationId, text: `Message from: ${req.body.user_name}, message: ${req.body.text}` })
+    .postMessage({ channel: conversationId, text: `@andreymenshikh Message from: ${req.body.user_name}, message: ${req.body.text}`, link_names: true})
     .then(res => {
         // `res` contains information about the posted message
         console.log("Message sent: ", res.ts);
+    })
+    .catch(console.error);
+    console.log("Dialog id: ", req.body.channel_id);
+    web.chat
+    .postEphemeral({ channel: req.body.channel_id, text: `@andreymenshikh Ohhh yeeeeaaaaahhh boiiii ${Date.now()}`, user: req.body.user_id, link_names: true })
+    .then(res => {
+        // `res` contains information about the posted message
+        console.log("Message to ${req.body.user_name} sent: ", res.ts);
     })
     .catch(console.error);
     res.send(`You messaged: ${req.body.text}`);
