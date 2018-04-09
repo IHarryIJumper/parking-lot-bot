@@ -5,18 +5,14 @@
     "main": "./src/index.js",
     "scripts": {
         "start": "node ./src/index.js",
+        "dev": "nodemon ./src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/IHarryIJumper/parking-lot-bot.git"
     },
-    "keywords": [
-        "bot",
-        "slask",
-        "node",
-        "js"
-    ],
+    "keywords": ["bot", "slask", "node", "js"],
     "author": "Andrey Menshikh",
     "license": "GPL-3.0",
     "bugs": {
@@ -38,8 +34,8 @@
     "engines": {
         "node": ">=8.0.0"
     },
-    "files": [
-        "config.json",
-        "src"
-    ]
+    "files": ["config.json", "src"],
+    "nodemonConfig": {
+        "delay": "1000"
+    }
 }
