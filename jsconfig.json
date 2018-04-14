@@ -3,7 +3,10 @@
     "baseUrl": "./src/",
     "paths": {
       "api/*": ["./api/*"],
-      "sqls/*": ["./sqls/*"]
+      "sqls/*": ["./sqls/*"],
+      "database/*": ["./database/*"],
+      "config": ["./config/index.js"],
+      "helpers/*": ["./helpers/*"]
     },
     "target": "es6",
     "module": "commonjs",

@@ -7,6 +7,6 @@ CREATE TABLE parking_info
 	created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 INSERT INTO parking_info
-	(name, lots)
+	(name, parking_lots)
 VALUES
 	('Default Parking', 0);

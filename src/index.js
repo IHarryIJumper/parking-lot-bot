@@ -1,11 +1,22 @@
+global.rootRequire = name => {
+    return require(`${__dirname}/${name}`);
+};
+
+global.requireSQL = name => {
+    const fs = require("fs");
+    return fs.readFileSync(`${__dirname}/${name}`).toString();
+};
+
 require("./helpers/consoleLogHelper.js");
 
 const { IncomingWebhook, WebClient } = require("@slack/client");
-const Config = require("../config.json");
+const Config = rootRequire("config");
 
 const express = require("express");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 // const path = require('path');
+
+const db = require("./database");
 
 const app = express();
 
@@ -21,7 +32,7 @@ app.use((req, res, next) => {
 });
 
 // app.use(bodyParser.json({ type: 'application/*+json' }))
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // An access token (from your Slack app or custom integration - xoxp, xoxb, or xoxa)
 // const token = process.env.SLACK_TOKEN;
@@ -45,20 +56,31 @@ app.post("/kek", (req, res) => {
     console.info("request data", req.body);
     // console.info("response data", res);
     web.chat
-    .postMessage({ channel: conversationId, text: `@andreymenshikh Message from: ${req.body.user_name}, message: ${req.body.text}`, link_names: true})
-    .then(res => {
-        // `res` contains information about the posted message
-        console.log("Message sent: ", res.ts);
-    })
-    .catch(console.error);
+        .postMessage({
+            channel: conversationId,
+            text: `@andreymenshikh Message from: ${
+                req.body.user_name
+            }, message: ${req.body.text}`,
+            link_names: true
+        })
+        .then(res => {
+            // `res` contains information about the posted message
+            console.log("Message sent: ", res.ts);
+        })
+        .catch(console.error);
     console.log("Dialog id: ", req.body.channel_id);
     web.chat
-    .postEphemeral({ channel: req.body.channel_id, text: `@andreymenshikh Ohhh yeeeeaaaaahhh boiiii ${Date.now()}`, user: req.body.user_id, link_names: true })
-    .then(res => {
-        // `res` contains information about the posted message
-        console.log("Message to ${req.body.user_name} sent: ", res.ts);
-    })
-    .catch(console.error);
+        .postEphemeral({
+            channel: req.body.channel_id,
+            text: `@andreymenshikh Ohhh yeeeeaaaaahhh boiiii ${Date.now()}`,
+            user: req.body.user_id,
+            link_names: true
+        })
+        .then(res => {
+            // `res` contains information about the posted message
+            console.log("Message to ${req.body.user_name} sent: ", res.ts);
+        })
+        .catch(console.error);
     res.send(`You messaged: ${req.body.text}`);
 });
 
@@ -102,10 +124,11 @@ timeNotification.send(`The current time is ${currentTime}`, (error, resp) => {
     }, 12000);
 }); */
 
+db.start().then(() => {
+    app.listen(process.env.PORT || 8080);
 
-app.listen(process.env.PORT || 8080);
-
-console.info(
-    `Listening on ${process.env.ROOT_URL || "http://localhost"}:${process.env
-        .PORT || 8080}`
-);
+    console.info(
+        `BOT STARTED on ${process.env.ROOT_URL || "http://localhost"}:${process
+            .env.PORT || 8080}`
+    );
+});
